@@ -12,7 +12,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 LEARNING_RATE = 5e-5
 BATCH_SIZE = 64
 IMAGE_SIZE = 64
-CHANNELS_IMG = 1 # set to 3 when training on celeb. dataset
+CHANNELS_IMG = 1  # set to 3 when training on celeb. dataset
 NOISE_DIM = 100
 NUM_EPOCHS = 5
 FEATURES_DISC = 64
@@ -31,7 +31,7 @@ transforms = transforms.Compose(
 )
 
 dataset = datasets.MNIST(root="dataset/", train=True, transform=transforms,
-                       download=True)
+                         download=True)
 
 # dataset = datasets.ImageFolder(root="celeb_dataset", transform=transforms) #<-- uncomment for celeb.dataset
 dataloader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
@@ -63,7 +63,7 @@ for epoch in range(NUM_EPOCHS):
             critic_fake = critic(fake).reshape(-1)
             loss_critic = -(torch.mean(critic_real) - torch.mean(critic_fake))
             critic.zero_grad()
-            loss_critic.backward(retain_graph = True)
+            loss_critic.backward(retain_graph=True)
             opt_critic.step()
 
             for p in critic.parameters():
@@ -76,14 +76,12 @@ for epoch in range(NUM_EPOCHS):
         loss_gen.backward()
         opt_gen.step()
 
-
         # Print losses occasionally and print to tensorboard
         if batch_idx % 100 == 0:
             print(
                 f"Epoch [{epoch}/{NUM_EPOCHS}] Batch {batch_idx}/{len(dataloader)} \
                   Loss D: {loss_critic:.4f}, loss G: {loss_gen:.4f}"
             )
-
             with torch.no_grad():
                 fake = gen(fixed_noise)
                 # take out (up to) 32 examples
@@ -93,8 +91,6 @@ for epoch in range(NUM_EPOCHS):
                 img_grid_fake = torchvision.utils.make_grid(
                     fake[:32], normalize=True
                 )
-
                 writer_real.add_image("Real", img_grid_real, global_step=step)
                 writer_fake.add_image("Fake", img_grid_fake, global_step=step)
-
             step += 1
