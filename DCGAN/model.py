@@ -3,7 +3,8 @@ import torch.nn as nn
 
 
 class Discriminator(nn.Module):
-    def __init__(self, channels_img, features_d):
+    def __init__(self, channels_img,
+                 features_d):
         super(Discriminator, self).__init__()
         self.disc = nn.Sequential(
             # input: N x channels_img x 64 x 64
@@ -30,7 +31,7 @@ class Discriminator(nn.Module):
                 padding,
                 bias=False,
             ),
-            #nn.BatchNorm2d(out_channels),
+            # nn.BatchNorm2d(out_channels),
             nn.LeakyReLU(0.2),
         )
 
@@ -64,7 +65,7 @@ class Generator(nn.Module):
                 padding,
                 bias=False,
             ),
-            #nn.BatchNorm2d(out_channels),
+            # nn.BatchNorm2d(out_channels),
             nn.ReLU(),
         )
 
@@ -73,10 +74,11 @@ class Generator(nn.Module):
 
 
 def initialize_weights(model):
-    # Initializes weights according to the DCGAN paper
+    # Initialize weights according to the DCGAN paper
     for m in model.modules():
         if isinstance(m, (nn.Conv2d, nn.ConvTranspose2d, nn.BatchNorm2d)):
             nn.init.normal_(m.weight.data, 0.0, 0.02)
+
 
 def test():
     N, in_channels, H, W = 8, 3, 64, 64
